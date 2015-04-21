@@ -27,8 +27,13 @@ module Middleman
       end
 
       def thumb(path, geometry)
-        absolute_path = absolute_source_path path
-        return unless File.exist?(absolute_path)
+        # First try using the given path.
+        absolute_path = File.join(app.config[:source], path)
+        unless File.exists?(absolute_path)
+          # Then try using the other path
+          absolute_path = absolute_source_path path
+        end
+        raise "Could not find image with path '#{absolute_path}'" unless File.exist?(absolute_path)
 
         image = ::Dragonfly.app.fetch_file(absolute_path)
         image.meta['original_path'] = path
