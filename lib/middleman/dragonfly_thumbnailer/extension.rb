@@ -45,7 +45,7 @@ module Middleman
 
       def in_image_folder(path)
         absolute_path = File.join(app.config[:source], path)
-        return File.exists?(absolute_path)
+        return !File.exists?(absolute_path)
       end
 
       def after_build(builder)
