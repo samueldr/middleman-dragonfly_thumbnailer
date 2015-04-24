@@ -43,6 +43,11 @@ module Middleman
         image
       end
 
+      def in_image_folder(path)
+        absolute_path = File.join(app.config[:source], path)
+        return File.exists?(absolute_path)
+      end
+
       def after_build(builder)
         images.each do |image|
           builder.say_status :create, build_path(image)
@@ -60,6 +65,10 @@ module Middleman
             url = image.b64_data
           else
             url = extensions[:dragonfly_thumbnailer].build_path(image)
+            unless extensions[:dragonfly_thumbnailer].in_image_folder(path) then
+              #HACK: Strip leading slash
+              url = url[1..-1] if url[0] == "/"
+            end
           end
 
           image_tag(url, options)
